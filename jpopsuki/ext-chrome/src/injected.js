@@ -12,6 +12,7 @@ function docType() {
 		: '' );
 }
 
+<<<<<<< HEAD
 function next() {
 	var last = lastPage()
 		, current = parseInt( page[1], 10 );
@@ -46,12 +47,22 @@ if ( !(page && page[1]) ) {
 req.addEventListener('load', function(evt) {
 	console.log(evt);
 	next();
+=======
+var req = new XMLHttpRequest();
+
+req.addEventListener('load', function(evt) {
+	console.log(evt);
+>>>>>>> Jpopsuki spider
 }, false);
 req.addEventListener('error', function(evt) {
 	console.error(evt);
 }, false);
 
+<<<<<<< HEAD
 req.open('post', '//127.0.0.1:1337/'+page[1]);
+=======
+req.open('post', '//127.0.0.1:1337/1');
+>>>>>>> Jpopsuki spider
 req.setRequestHeader('Content-Type', 'text/html; charset=UTF-8');
 
 req.send(
