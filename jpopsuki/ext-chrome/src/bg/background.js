@@ -11,10 +11,28 @@
 //  	chrome.pageAction.show(sender.tab.id);
 //    sendResponse();
 //  });
-
+var rePage = /\bpage=(\d+)\b/;
+function getPage(url) {
+	return parseInt( url.match(rePage)[1], 10 );
+}
 chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.executeScript({
-    //code: 'document.body.style.backgroundColor="red"'
-		file: 'src/injected.js'
-  }); 
+	var page = getPage(tab.url);
+	function run() {
+		chrome.tabs.executeScript(tab.id, {
+			//code: 'document.body.style.backgroundColor="red"'
+			file: 'src/injected.js'
+		});
+	}
+	chrome.tabs.onUpdated.addListener(function(tid, evt) {
+		if ( tid !== tab.id ) return;
+		console.log(evt);
+		if ( evt.url ) {
+			tpg = getPage(evt.url);
+			if ( tpg > page ) {
+				page = tpg;
+				run();
+			}
+		}
+	}); 
+	run();
 });

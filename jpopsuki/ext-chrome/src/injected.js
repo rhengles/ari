@@ -12,16 +12,46 @@ function docType() {
 		: '' );
 }
 
-var req = new XMLHttpRequest();
+function next() {
+	var last = lastPage()
+		, current = parseInt( page[1], 10 );
+	(current > last) && (last = current);
+	console.log('Done page '+current+' of '+last);
+	if ( current == last ) {
+		console.log('Finished!');
+	} else {
+		location.href = location.href.replace(rePage, 'page='+(1+current));
+	}
+}
+
+function pageOf(a) {
+	return parseInt( a.href.match(rePage)[1], 10 );
+}
+function lastPage() {
+	return Array.prototype.slice.call(document
+			.querySelectorAll('a[href^="torrents.php?page="]'))
+		.reduce(function(p, c) {
+			return Math.max( p, pageOf(c) );
+		}, 0);
+}
+
+var rePage = /\bpage=(\d+)\b/
+	, page = location.search.match(rePage)
+	, req = new XMLHttpRequest();
+
+if ( !(page && page[1]) ) {
+	throw new Error('Página não reconhecida!');
+}
 
 req.addEventListener('load', function(evt) {
 	console.log(evt);
+	next();
 }, false);
 req.addEventListener('error', function(evt) {
 	console.error(evt);
 }, false);
 
-req.open('post', '//127.0.0.1:1337/1');
+req.open('post', '//127.0.0.1:1337/'+page[1]);
 req.setRequestHeader('Content-Type', 'text/html; charset=UTF-8');
 
 req.send(

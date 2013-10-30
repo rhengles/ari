@@ -7,8 +7,7 @@ http.createServer(function (req, res) {
   if ( req.method === 'POST' ) {
     req.setEncoding('utf8');
 		w = new Writer;
-		w.name = req.url.replace(/\W/g, '').substr(0, 64).concat('.html');
-		w.saveAs(req, req.url, 'html');
+		w.save(req, 'html');
     req.on('data', function(chunk) {
       console.log(chunk.substr(0, 80));
     });

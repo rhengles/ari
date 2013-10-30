@@ -3,10 +3,14 @@ import fs from 'fs';
 function Writer() {
 }
 
+Writer.prototype.saveDir = 'jpopsuki/data/';
+
 Writer.prototype.getWriteStream = function() {
 	//fs.open(this.name, 'w', this.onFileOpen.bind(this));
 	if ( !this.ws ) {
-		this.ws = fs.createWriteStream(this.name);
+		var path = this.saveDir+this.name;
+		this.ws = fs.createWriteStream(path);
+		fs.realpath(path, this.onPath.bind(this));
 		this.ws.on('error', this.onError.bind(this));
 		this.ws.on('finish', this.onFinish.bind(this));
 	}
@@ -23,15 +27,21 @@ Writer.prototype.normalizeFileName = function(file, ext) {
 Writer.prototype.saveAs = function(req, file, ext) {
 	(ext == null) || (file = this.normalizeFileName(file, ext));
 	this.name = file;
-	return this.save(req);
+	return this.saveReq(req);
 }
 
-Writer.prototype.getNameFromReq = function(req) {
+Writer.prototype.getNameFromReq = function(req, ext) {
+	return this.normalizeFileName(req.url, ext);
 }
 
-Writer.prototype.save = function(req) {
+Writer.prototype.saveReq = function(req) {
 	req.pipe( this.getWriteStream() );
 	return this;
+}
+
+Writer.prototype.save = function(req, ext) {
+	this.name || (this.name = this.getNameFromReq(req, ext));
+	return this.saveReq(req);
 }
 
 Writer.prototype.onError = function(err) {
@@ -41,6 +51,11 @@ Writer.prototype.onError = function(err) {
 
 Writer.prototype.onFinish = function() {
 	console.log('FILE "'+this.name+'" SAVED');
+}
+
+Writer.prototype.onPath = function(err, path) {
+	if (err) return this.onError(err);
+	console.log('REAL: '+path);
 }
 
 export default Writer;
