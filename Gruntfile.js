@@ -4,23 +4,37 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 		clean: {
-			build: ['amd']
+			//amd: ['amd'],
+			cjs: ['cjs']
 		},
 		transpile: {
-			main: {
-				type: 'amd',
-				anonymous: true,
+			//amd: {
+			//	type: 'amd',
+			//	anonymous: true,
+			//	indent: 'tab',
+			//	eol: '\r\n',
+			//	strict: false,
+			//	squotes: true,
+			//	dontIndentDefine: true,
+			//	dontIndentDefineFn: true,
+			//	files: [{
+			//		expand: true,
+			//		cwd: 'es6/',
+			//		src: ['**/*.js'],
+			//		dest: 'amd/'
+			//	}]
+			//},
+			cjs: {
+				type: 'cjs',
 				indent: 'tab',
 				eol: '\r\n',
 				strict: false,
 				squotes: true,
-				dontIndentDefine: true,
-				dontIndentDefineFn: true,
 				files: [{
 					expand: true,
 					cwd: 'es6/',
 					src: ['**/*.js'],
-					dest: 'amd/'
+					dest: 'cjs/'
 				}]
 			}
 		}
@@ -42,6 +56,6 @@ module.exports = function(grunt) {
 
   // Default task(s).
   //grunt.registerTask('default', ['uglify']);
-	grunt.registerTask('build', ['clean', 'transpile']);
+	grunt.registerTask('default', ['clean', 'transpile']);
 
 };
