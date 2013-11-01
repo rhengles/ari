@@ -24,14 +24,27 @@ sa.path = pathLib;
 
 allDir.then(function() {
 	var json = this.json[0]
-		, lib = arr2map(this.lib[0]);
+		, lib = arr2map(this.lib[0])
+		, allPages = new All;
 	sa.folders = lib;
-	loadJson(
-		{ path: [pathJson, json[0].name].join('/')
-		, cb: function(json) {
-				json.forEach(sa.save.bind(sa));
-			}
+	json.forEach(function(json, index) {
+		var then = allPages.getCb(index);
+		loadJson(
+			{ path: [pathJson, json.name].join('/')
+			, cb: function(json) {
+					json.forEach(sa.save.bind(sa));
+					then();
+				}
+			});
+	});
+	allPages.then(function() {
+		console.log('> done');
+		console.log(sa);
+		sa.then(function() {
+			console.log('> then');
+			console.log(this);
 		});
+	});
 	//for ( var f in a ) {
 	//	console.log(f+':'+a[f].filter+' '+a[f].name);
 	//}

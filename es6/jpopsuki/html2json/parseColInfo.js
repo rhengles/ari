@@ -1,4 +1,5 @@
 import hp from 'htmlparser2';
+import ent from 'entities';
 import getRange from './getRange';
 import getText from './getText';
 import parseUrl from './parseUrl';
@@ -38,8 +39,8 @@ function parseColInfo(td) {
 		, torr = parseUrl(info[1])
 		, artOrig = rTrim(info[0].attribs.title, exArt)
 		, torrOrig = rTrim(info[1].attribs.title, exTorr)
-		, artName = getText(info[0])
-		, torrName = getText(info[1])
+		, artName = ent.decode(getText(info[0]))
+		, torrName = ent.decode(getText(info[1]))
 		, comments = info[2] && getText(info[2])
 		, tags = du.findAll(function(elem) {
 				return (elem.name === 'a');

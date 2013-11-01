@@ -10,17 +10,29 @@ SaveArtist.prototype.reset = function() {
 	this.created = {};
 	this.failed = {};
 };
+SaveArtist.prototype.then = function(cb) {
+	this.done = cb;
+	this.checkDone(); // vai que...
+};
+SaveArtist.prototype.checkDone = function() {
+	for ( var k in this.build ) {
+		return;
+	}
+	this.done();
+};
+SaveArtist.prototype.safeName = function(s) {
+	return s.replace(/[:*]/g, '-');
+};
 SaveArtist.prototype.save = function(json) {
-	var artist = json.info.artist.name
-		, folder = artist in this.folders
-		, build = artist in this.build;
-	( folder
+	var artist = this.safeName(json.info.artist.name);
+	( artist in this.folders
 	? console.log('Pasta existe '+artist)
-	: ( build
+	: ( artist in this.build
 		? console.log('Pasta saindo '+artist)
 		: this.create(artist)
 		)
 	);
+	this.done && this.checkDone();
 };
 SaveArtist.prototype.create = function(artist) {
 	this.build[artist] = true;
