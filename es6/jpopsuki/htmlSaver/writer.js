@@ -3,7 +3,7 @@ import fs from 'fs';
 function Writer() {
 }
 
-Writer.prototype.saveDir = 'jpopsuki/data/';
+Writer.prototype.saveDir = '';
 
 Writer.prototype.getWriteStream = function() {
 	//fs.open(this.name, 'w', this.onFileOpen.bind(this));

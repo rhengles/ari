@@ -1,2 +1,2 @@
 @echo off
-node cjs\jpopsuki\index.js
+node cjs\jpopsuki\spider\index.js

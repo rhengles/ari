@@ -7,6 +7,7 @@ http.createServer(function (req, res) {
   if ( req.method === 'POST' ) {
     req.setEncoding('utf8');
 		w = new Writer;
+		w.saveDir = 'jpopsuki/data/';
 		w.save(req, 'html');
     req.on('data', function(chunk) {
       console.log(chunk.substr(0, 80));

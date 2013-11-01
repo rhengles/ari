@@ -1,5 +1,4 @@
-import fs from 'fs';
-import dir from './dir';
+import dir from '../dir';
 import converter from './converter';
 
 var path = 'jpopsuki/data'

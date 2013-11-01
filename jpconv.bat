@@ -1,2 +1,2 @@
 @echo off
-node cjs\html2jdom\index.js
+node cjs\jpopsuki\html2json\index.js
