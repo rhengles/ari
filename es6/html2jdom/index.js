@@ -1,10 +1,9 @@
 import fs from 'fs';
 import dir from './dir';
-import parser from './parser';
-import getRows from './getRows';
-import parseRow from './parseRow';
+import converter from './converter';
 
 var path = 'jpopsuki/data'
+	, pathOut = 'jpopsuki/json'
 	, reFile = /^(\d+)\.html$/;
 
 dir(
@@ -18,16 +17,12 @@ dir(
 		}
 	, cb: function(a) {
 			for ( var f in a ) {
-				console.log(f+':'+a[f].filter+' '+a[f].name);
+				//console.log(f+':'+a[f].filter+' '+a[f].name);
+				converter(
+					{ pathIn: path
+					, pathOut: pathOut
+					, file: a[f]
+					});
 			}
-			parser(
-				{ path: [path, a[0].name].join('/')
-				, cb: function(dom) {
-						//console.log(dom);
-						var r = getRows(dom);
-						console.log('ROWS FOUND: '+r.length);
-						console.log(parseRow(r[0]));
-					}
-				});
 		}
 	});

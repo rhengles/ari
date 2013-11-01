@@ -4,13 +4,18 @@ import parseUrl from './parseUrl';
 
 var du = hp.DomUtils;
 
+function getFilterCat(link) {
+	var m = link.query.match(/filter_cat%5B([^\%]*)%5D/);
+	return m ? m[1] : link.query;
+}
+
 function parseColType(td) {
 	var a = du.findOne(function(elem) {
 				return (elem.name === 'a');
 			}, td.children)
-		, link = parseUrl(a);
+		, link = parseUrl(a, false);
 	return (
-		{ id: link.query['filter_cat[2]']
+		{ id: getFilterCat(link)
 		, name: getText(a)
 		});
 }
