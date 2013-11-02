@@ -2,6 +2,10 @@ function All() {
 	this.reset();
 }
 
+// To use All, you must first get all callbacks with ::getCb()
+// then register a callback with ::then() that will be called
+// when all ::getCb()'s are called.
+
 All.prototype.reset = function() {
 	this.pending = {};
 	this.solved = {};
@@ -18,7 +22,7 @@ All.prototype.getCb = function(key) {
 	var all = this;
 	this.pending[key] = true;
 	return function() {
-		all.solve(key, arguments); //Array.prototype.slice.call()
+		all.solve(key, arguments);
 	};
 };
 All.prototype.solve = function(key, value) {

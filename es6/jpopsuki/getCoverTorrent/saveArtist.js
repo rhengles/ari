@@ -12,7 +12,7 @@ SaveArtist.prototype.reset = function() {
 };
 SaveArtist.prototype.then = function(cb) {
 	this.done = cb;
-	this.checkDone(); // vai que...
+	this.checkDone(); // just in case
 };
 SaveArtist.prototype.checkDone = function() {
 	for ( var k in this.build ) {
@@ -21,14 +21,17 @@ SaveArtist.prototype.checkDone = function() {
 	this.done();
 };
 SaveArtist.prototype.safeName = function(s) {
-	return s.replace(/[:*]/g, '-');
+	return s
+    .replace(/[:*]/g, '-')
+    .replace(/\.+$/g, ''); // To avoid problems in Windows
+  // see http://support.microsoft.com/?kbid=320081
 };
 SaveArtist.prototype.save = function(json) {
 	var artist = this.safeName(json.info.artist.name);
 	( artist in this.folders
-	? console.log('Pasta existe '+artist)
+	? this.log && console.log('Folder exists '+artist)
 	: ( artist in this.build
-		? console.log('Pasta saindo '+artist)
+		? this.log && console.log('Creating folder '+artist)
 		: this.create(artist)
 		)
 	);
@@ -41,15 +44,29 @@ SaveArtist.prototype.create = function(artist) {
 	, (function(err) {
 			delete this.build[artist];
 			if (err) {
-				console.log('Erro ao criar '+artist);
-				console.log(err);
 				this.failed[artist] = err;
-				return;
-			}
-			this.created[artist] = true;
-			this.folders[artist] = true;
-			console.log('Pasta criada '+artist);
+				console.log('Error creating '+artist);
+				console.log(err);
+			} else {
+        this.created[artist] = true;
+        this.folders[artist] = true;
+        this.log && console.log('Folder created '+artist);
+      }
+      this.done && this.checkDone();
 		}).bind(this));
 }
+SaveArtist.prototype.countKeys = function(obj) {
+  var i = 0;
+  for ( var k in obj ) i++;
+  return i;
+};
+SaveArtist.prototype.count = function() {
+  return (
+    { folders: this.countKeys(this.folders)
+    , build:   this.countKeys(this.build  )
+    , created: this.countKeys(this.created)
+    , failed:  this.countKeys(this.failed )
+    });
+};
 
 export default SaveArtist;

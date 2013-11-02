@@ -23,11 +23,12 @@ var pathJson = 'jpopsuki/json'
 sa.path = pathLib;
 
 allDir.then(function() {
-	var json = this.json[0]
+	var jsonFile = this.json[0]
 		, lib = arr2map(this.lib[0])
 		, allPages = new All;
 	sa.folders = lib;
-	json.forEach(function(json, index) {
+  //sa.log = true;
+	jsonFile.forEach(function(json, index) {
 		var then = allPages.getCb(index);
 		loadJson(
 			{ path: [pathJson, json.name].join('/')
@@ -38,16 +39,11 @@ allDir.then(function() {
 			});
 	});
 	allPages.then(function() {
-		console.log('> done');
-		console.log(sa);
 		sa.then(function() {
-			console.log('> then');
-			console.log(this);
+			console.log('Done');
+			console.log(this.count());
 		});
 	});
-	//for ( var f in a ) {
-	//	console.log(f+':'+a[f].filter+' '+a[f].name);
-	//}
 });
 
 dir(
