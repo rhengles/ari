@@ -1,4 +1,5 @@
 import fs from 'fs';
+import dirName from '../dirName';
 
 function SaveArtist() {
 	this.reset();
@@ -20,15 +21,9 @@ SaveArtist.prototype.checkDone = function() {
 	}
 	this.done();
 };
-SaveArtist.prototype.safeName = function(s) {
-	return s
-    .replace(/[:*]/g, '-')
-    .replace(/\.+$/g, ''); // To avoid problems in Windows
-  // see http://support.microsoft.com/?kbid=320081
-};
 SaveArtist.prototype.save = function(json) {
-	var artist = this.safeName(json.info.artist.name);
-	( artist in this.folders
+	var artist = dirName(json.info.artist.name);
+	( artist.toLowerCase() in this.folders
 	? this.log && console.log('Folder exists '+artist)
 	: ( artist in this.build
 		? this.log && console.log('Creating folder '+artist)

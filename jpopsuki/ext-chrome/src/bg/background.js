@@ -11,10 +11,12 @@
 //  	chrome.pageAction.show(sender.tab.id);
 //    sendResponse();
 //  });
-<<<<<<< HEAD
 var rePage = /\bpage=(\d+)\b/;
 function getPage(url) {
-	return parseInt( url.match(rePage)[1], 10 );
+  url = url.match(rePage);
+	return url
+    ? parseInt( url[1], 10 )
+    : Number.NaN;
 }
 chrome.browserAction.onClicked.addListener(function(tab) {
 	var page = getPage(tab.url);
@@ -36,12 +38,4 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 		}
 	}); 
 	run();
-=======
-
-chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.executeScript({
-    //code: 'document.body.style.backgroundColor="red"'
-		file: 'src/injected.js'
-  }); 
->>>>>>> Jpopsuki spider
 });

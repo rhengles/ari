@@ -4,6 +4,7 @@ import getRange from './getRange';
 import getText from './getText';
 import parseUrl from './parseUrl';
 import rTrim from './rTrim';
+import dirName from '../dirName';
 
 var du = hp.DomUtils
 	, exArt = 'View Artist'
@@ -28,9 +29,9 @@ function parseColInfo(td) {
 				}
 			, elems: td.children
 			})
-		//, dl = parseUrl(du.findOne(function(elem) {
-		//		return (elem.name === 'a');
-		//	}, span.children))
+		, sl = du.findAll(function(elem) {
+				return (elem.name === 'a');
+			}, span.children)
 		, info = du.findAll(function(elem) {
 				return (elem.name === 'a');
 			}, range)
@@ -41,6 +42,8 @@ function parseColInfo(td) {
 		, torrOrig = rTrim(info[1].attribs.title, exTorr)
 		, artName = ent.decode(getText(info[0]))
 		, torrName = ent.decode(getText(info[1]))
+    , artDir = dirName(artName)
+    , torrDir = dirName(torrName)
 		, comments = info[2] && getText(info[2])
 		, tags = du.findAll(function(elem) {
 				return (elem.name === 'a');
@@ -53,11 +56,13 @@ function parseColInfo(td) {
 			{ id: art.query.id
 			, original: artOrig
 			, name: artName
+      , dirName: artDir === artName ? void 0 : artDir
 			}
 		, torrent:
 			{ id: torr.query.torrentid
 			, original: torrOrig
 			, name: torrName
+      , dirName: torrDir === torrName ? void 0 : torrDir
 			//, authkey: dl.query.authkey[0]
 			//, torrent_pass: dl.query.torrent_pass[0]
 			}
@@ -65,6 +70,9 @@ function parseColInfo(td) {
 		, date: det && det[2]
 		, comments: comments
 		, tags: tags
+    , reported: (sl && sl[1] && getText(sl[1]) === 'Reported!')
+      ? true
+      : void 0
 		});
 	
 	return (

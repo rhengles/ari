@@ -7,7 +7,7 @@ import SaveArtist from './saveArtist';
 function arr2map(a) {
 	var m = {};
 	for ( var i = 0, ii = a.length; i < ii; i++ ) {
-		m[a[i]] = true;
+		m[a[i].toLowerCase()] = true;
 	}
 	return m;
 }
@@ -24,10 +24,11 @@ sa.path = pathLib;
 
 allDir.then(function() {
 	var jsonFile = this.json[0]
-		, lib = arr2map(this.lib[0])
+		, lib = this.lib[0]
 		, allPages = new All;
-	sa.folders = lib;
   //sa.log = true;
+  lib = arr2map(lib);
+	sa.folders = lib;
 	jsonFile.forEach(function(json, index) {
 		var then = allPages.getCb(index);
 		loadJson(

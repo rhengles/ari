@@ -1,14 +1,14 @@
 import parser from './parser';
 import parsePage from './parsePage';
-import writer from './writer';
+import saveJson from '../saveJson';
 
 function converter(opt) {
 	parser(
 		{ path: [opt.pathIn, opt.file.name].join('/')
 		, cb: function(dom) {
 				//console.log(dom);
-				dom = JSON.stringify(parsePage(dom, opt.file.filter), null, '\t');
-				writer( [opt.pathOut, opt.file.filter+'.json'].join('/'), dom );
+				dom = parsePage(dom, opt.file.filter);
+        saveJson( [opt.pathOut, opt.file.filter+'.json'].join('/'), dom );
 			}
 		});
 }

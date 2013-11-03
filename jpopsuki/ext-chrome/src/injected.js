@@ -12,7 +12,6 @@ function docType() {
 		: '' );
 }
 
-<<<<<<< HEAD
 function next() {
 	var last = lastPage()
 		, current = parseInt( page[1], 10 );
@@ -35,34 +34,26 @@ function lastPage() {
 			return Math.max( p, pageOf(c) );
 		}, 0);
 }
-
+//*
 var rePage = /\bpage=(\d+)\b/
 	, page = location.search.match(rePage)
 	, req = new XMLHttpRequest();
 
 if ( !(page && page[1]) ) {
 	throw new Error('Página não reconhecida!');
-}
-
-req.addEventListener('load', function(evt) {
-	console.log(evt);
-	next();
-=======
+}/*/
 var req = new XMLHttpRequest();
+//*/
 
 req.addEventListener('load', function(evt) {
 	console.log(evt);
->>>>>>> Jpopsuki spider
+	setTimeout(next, 1000);
 }, false);
 req.addEventListener('error', function(evt) {
 	console.error(evt);
 }, false);
 
-<<<<<<< HEAD
-req.open('post', '//127.0.0.1:1337/'+page[1]);
-=======
-req.open('post', '//127.0.0.1:1337/1');
->>>>>>> Jpopsuki spider
+req.open('post', '//127.0.0.1:1337/'+page[1]);//fav');//
 req.setRequestHeader('Content-Type', 'text/html; charset=UTF-8');
 
 req.send(
