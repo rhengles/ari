@@ -1,15 +1,20 @@
-import http from 'http';
 import getLogin from './getlogin';
 import postLogin from './postlogin';
-import proxy from './proxy';
 import cookies from './cookies';
 import cr from './credentials';
+import jsonPrint from './jsonprint';
 
-getLogin(function(res, req) {
+function handleLoginPost(res, req) {
+	console.log('LOGIN POST OK');
+}
+
+function handleLoginGet(res, req) {
   var c = res.headers['set-cookie'];
-  //cookies = cookies.replace(/; path=\/$/, '');
-  console.log('Cookie: '+JSON.stringify(c));
+  console.log('Cookie: '+jsonPrint(c));
+	console.log('LOGIN GET OK');
 	process.nextTick(function() {
-		postLogin(cr.user, cr.pass, cookies(c), void 0); //proxy);
+		postLogin(cr.user, cr.pass, cookies(c), handleLoginPost, true);
 	});
-}, void 0, void 0); //proxy);
+}
+
+getLogin(handleLoginGet);

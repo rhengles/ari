@@ -1,4 +1,4 @@
-function proxy(opt) {
+var proxy = function(opt) {
   //return opt;
   var h = opt.host || (opt.hostname + (opt.port ? ':' + opt.port : ''));
   opt.path = 'http://'+h+opt.path;
@@ -9,5 +9,6 @@ function proxy(opt) {
   opt.host = void 0;
   return opt;
 }
+proxy = null;
 
 export default proxy;
