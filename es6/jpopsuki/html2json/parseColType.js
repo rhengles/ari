@@ -1,5 +1,5 @@
 import hp from 'htmlparser2';
-import getText from './getText';
+import getText from '../getText';
 import parseUrl from './parseUrl';
 
 var du = hp.DomUtils;

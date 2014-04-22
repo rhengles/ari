@@ -5,7 +5,7 @@ import colInfo from './parseColInfo';
 import colFiles from './parseColFiles';
 import colSnatched from './parseColSnatched';
 import colSize from './parseColSize';
-import getText from './getText';
+import getText from '../getText';
 
 var du = hp.DomUtils;
 

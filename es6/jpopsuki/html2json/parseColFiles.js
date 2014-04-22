@@ -1,4 +1,4 @@
-import getText from './getText';
+import getText from '../getText';
 
 function parseColFiles(td) {
 	return getText(td);

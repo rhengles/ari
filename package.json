@@ -11,6 +11,7 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-es6-module-transpiler": "~0.4.1",
-    "grunt-contrib-clean": "~0.5.0"
+    "grunt-contrib-clean": "~0.5.0",
+    "htmlparser2": "^3.7.1"
   }
 }

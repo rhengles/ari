@@ -30,11 +30,12 @@ var requestJPS = function(opt) {
 						) );
 				}
 			: null
+		, onData: opt.onData
 		, done: opt.log
 			? function(res, req) {
 					console.log('STATUS: ' + res.statusCode);
 					console.log('HEADERS: ' + jsonPrint(res.headers));
-					console.log('BODY: ' + res.body);
+					console.log('BODY: ' + res.body.substr(0, 1200));
 					return done.apply(this, arguments);
 				}
 			: done

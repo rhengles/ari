@@ -80,10 +80,15 @@ Request.prototype.send = function() {
 Request.prototype.onResponse = function(res) {
 	var self = this
 		, cb = this.opt.done
+		, data = this.opt.onData
 		, body = '';
 	res.setEncoding('utf8');
 	res.on('data', function (chunk) {
-		body += chunk;
+		if ( data ) {
+			data.apply(self, arguments);
+		} else {
+			body += chunk;
+		}
 	});
 	cb && res.on('end', function() {
 		res.body = body;
