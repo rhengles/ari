@@ -3,11 +3,12 @@ import dir from '../dir';
 import All from '../all';
 import loadJson from './loadJson';
 import SaveArtist from './saveArtist';
+import saveCover from './saveCover';
 
 function arr2map(a) {
 	var m = {};
 	for ( var i = 0, ii = a.length; i < ii; i++ ) {
-		m[a[i].toLowerCase()] = true;
+		m[a[i]/*.toLowerCase()*/] = true;
 	}
 	return m;
 }
@@ -21,6 +22,7 @@ var pathJson = 'jpopsuki/json'
 	, sa = new SaveArtist;
 
 sa.path = pathLib;
+sa.onFolder(saveCover);
 
 allDir.then(function() {
 	var jsonFile = this.json[0]

@@ -9,6 +9,7 @@ import dirName from '../dirName';
 var du = hp.DomUtils
 	, exArt = 'View Artist'
 	, exTorr = 'View Torrent'
+	, exCom  = 'View Comments'
 	, reInfo = /\[([^\]]*)\]\s*\[([\.\d]*)\]/;
 
 function parseColInfo(td) {
@@ -32,17 +33,27 @@ function parseColInfo(td) {
 		, sl = du.findAll(function(elem) {
 				return (elem.name === 'a');
 			}, span.children)
-		, info = du.findAll(function(elem) {
+		, info = function(info) {
+				var a = [], t;
+				for ( var i = 0, ii = info.length; i < ii; i++ ) {
+					t = info[i].attribs.title;
+					t &&
+					( t.indexOf(exArt ) != -1 ? (a[0] = info[i]) :
+					( t.indexOf(exTorr) != -1 ? (a[1] = info[i]) :
+					( t.indexOf(exCom ) != -1 ? (a[2] = info[i]) : null )));
+				}
+				return a;
+			}(du.findAll(function(elem) {
 				return (elem.name === 'a');
-			}, range)
+			}, range))
 		, det = getText(range).match(reInfo)
-		, art = parseUrl(info[0])
+		, art = info[0] ? parseUrl(info[0]) : null
 		, torr = parseUrl(info[1])
-		, artOrig = rTrim(info[0].attribs.title, exArt)
+		, artOrig = info[0] ? rTrim(info[0].attribs.title, exArt) : null
 		, torrOrig = rTrim(info[1].attribs.title, exTorr)
-		, artName = ent.decode(getText(info[0]))
+		, artName = info[0] ? ent.decode(getText(info[0])) : null
 		, torrName = ent.decode(getText(info[1]))
-    , artDir = dirName(artName)
+    , artDir = artName ? dirName(artName) : null
     , torrDir = dirName(torrName)
 		, comments = info[2] && getText(info[2])
 		, tags = du.findAll(function(elem) {
@@ -52,12 +63,13 @@ function parseColInfo(td) {
 			});
 	return (
 		{ id: torr.query.id
-		, artist:
-			{ id: art.query.id
-			, original: artOrig
-			, name: artName
-      , dirName: artDir === artName ? void 0 : artDir
-			}
+		, artist: art
+			? { id: art.query.id
+				, original: artOrig
+				, name: artName
+				, dirName: artDir === artName ? void 0 : artDir
+				}
+			: null
 		, torrent:
 			{ id: torr.query.torrentid
 			, original: torrOrig

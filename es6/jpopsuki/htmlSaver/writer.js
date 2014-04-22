@@ -44,6 +44,11 @@ Writer.prototype.save = function(req, ext) {
 	return this.saveReq(req);
 }
 
+Writer.prototype.onPath = function(err, path) {
+	if (err) return this.onError(err);
+	console.log('REAL: '+path);
+}
+
 Writer.prototype.onError = function(err) {
 	console.log('ERROR WRITING FILE "'+this.name+'":');
 	console.log(err);
@@ -51,11 +56,6 @@ Writer.prototype.onError = function(err) {
 
 Writer.prototype.onFinish = function() {
 	console.log('FILE "'+this.name+'" SAVED');
-}
-
-Writer.prototype.onPath = function(err, path) {
-	if (err) return this.onError(err);
-	console.log('REAL: '+path);
 }
 
 export default Writer;

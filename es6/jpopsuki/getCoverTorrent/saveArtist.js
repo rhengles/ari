@@ -10,6 +10,7 @@ SaveArtist.prototype.reset = function() {
 	this.build = {};
 	this.created = {};
 	this.failed = {};
+	this.cbFolder = [];
 };
 SaveArtist.prototype.then = function(cb) {
 	this.done = cb;
@@ -21,31 +22,55 @@ SaveArtist.prototype.checkDone = function() {
 	}
 	this.done();
 };
+SaveArtist.prototype.onFolder = function(cb) {
+	this.cbFolder = this.cbFolder
+		.concat( cb instanceof Array
+			? cb
+			: ( cb
+				? [ cb ]
+				: []
+				)
+		);
+	return this;
+};
+SaveArtist.prototype.callCbFolder = function(dir, json) {
+	var c = this.cbFolder;
+	for ( var i = 0, ii = c.length; i < ii; i++ ) {
+		( c[i] instanceof Function ) &&
+		( c[i].call(this, dir, json) );
+	}
+	return this;
+};
 SaveArtist.prototype.save = function(json) {
-	var artist = dirName(json.info.artist.name);
-	( artist.toLowerCase() in this.folders
-	? this.log && console.log('Folder exists '+artist)
-	: ( artist in this.build
-		? this.log && console.log('Creating folder '+artist)
-		: this.create(artist)
-		)
-	);
+	var artist = json.info.artist;
+	if ( artist ) {
+		artist = dirName(artist.name);
+		if ( artist in this.folders ) {
+			this.log && console.log('Folder exists '+artist);
+			this.callCbFolder(artist, json);
+		} else if ( artist in this.build ) {
+			this.log && console.log('Creating folder '+artist);
+		} else {
+			this.create(artist, json);
+		}
+	}
 	this.done && this.checkDone();
 };
-SaveArtist.prototype.create = function(artist) {
-	this.build[artist] = true;
+SaveArtist.prototype.create = function(dir, json) {
+	this.build[dir] = true;
 	fs.mkdir(
-		[this.path, artist].join('/')
+		[this.path, dir].join('/')
 	, (function(err) {
-			delete this.build[artist];
+			delete this.build[dir];
 			if (err) {
-				this.failed[artist] = err;
-				console.log('Error creating '+artist);
+				this.failed[dir] = err;
+				console.log('Error creating '+dir);
 				console.log(err);
 			} else {
-        this.created[artist] = true;
-        this.folders[artist] = true;
-        this.log && console.log('Folder created '+artist);
+        this.created[dir] = true;
+        this.folders[dir] = true;
+        this.log && console.log('Folder created '+dir);
+				this.callCbFolder(dir, json);
       }
       this.done && this.checkDone();
 		}).bind(this));

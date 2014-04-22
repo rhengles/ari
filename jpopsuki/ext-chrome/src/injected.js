@@ -34,7 +34,7 @@ function lastPage() {
 			return Math.max( p, pageOf(c) );
 		}, 0);
 }
-//*
+/*
 var rePage = /\bpage=(\d+)\b/
 	, page = location.search.match(rePage)
 	, req = new XMLHttpRequest();
@@ -47,13 +47,13 @@ var req = new XMLHttpRequest();
 
 req.addEventListener('load', function(evt) {
 	console.log(evt);
-	setTimeout(next, 1000);
+	//setTimeout(next, 1000);
 }, false);
 req.addEventListener('error', function(evt) {
 	console.error(evt);
 }, false);
 
-req.open('post', '//127.0.0.1:1337/'+page[1]);//fav');//
+req.open('post', '//127.0.0.1:1337/fav');//'+page[1]);//
 req.setRequestHeader('Content-Type', 'text/html; charset=UTF-8');
 
 req.send(
