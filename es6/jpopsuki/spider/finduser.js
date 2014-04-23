@@ -23,10 +23,11 @@ function findUser(dom) {
 		}
 		return found;
 	}, dom, true, 1);
-	return (
-		{ id: id
-		, name: name
-		} );
+	return ( id
+		? { id: id
+			, name: name
+			}
+		: null);
 }
 
 export default findUser;

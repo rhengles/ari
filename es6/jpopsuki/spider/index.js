@@ -6,11 +6,12 @@ import cookiesParse from './cookies';
 import cr from './credentials';
 import jsonPrint from './jsonprint';
 import sessionSave from './sessionsave';
+import sessionLoad from './sessionload';
 import dirName from '../dirName';
 import mkDir from '../mkdir';
 
-var cookies
-	, session;
+var session
+	, cookies;
 
 function sessionSaved() {
 	console.log('SESSION SAVED: '+this.path);
@@ -19,31 +20,51 @@ function sessionSaved() {
 function handleIndex(dom, res, req) {
 	var user = findUser(dom);
 	//console.log(dom);
-	console.log('USER ID: '+jsonPrint(user));
+	console.log('USER: '+jsonPrint(user));
+	session.user = user;
 	process.nextTick(function() {
-		sessionSave(
-			{ user: user
-			, cookies: cookies
-			}
-		, sessionSaved);
+		sessionSave(session, sessionSaved);
 	});
 }
 
 function handleLoginPost(res, req) {
 	console.log('LOGIN SUCCESSFUL');
 	process.nextTick(function() {
-		getIndex(session, handleIndex);
+		getIndex(cookies, handleIndex);
 	});
 }
 
 function handleLoginGet(res, req) {
   cookies = res.headers['set-cookie'];
   console.log('Cookie: '+jsonPrint(cookies));
-	session = cookiesParse(cookies);
+	session =
+		{ cookies: cookies
+		};
+	cookies = cookiesParse(cookies);
 	//console.log('LOGIN GET OK');
 	process.nextTick(function() {
-		postLogin(cr.user, cr.pass, session, handleLoginPost);
+		postLogin(cr.user, cr.pass, cookies, handleLoginPost);
 	});
 }
 
-getLogin(handleLoginGet);
+function sessionVerify(dom, res, req) {
+	var user = findUser(dom);
+	if (user) {
+		console.log('SESSION VALID: '+user.id+' '+user.name);
+	} else if (cr.pass) {
+		console.log('SESSION EXPIRED, RECONNECTING');
+		getLogin(handleLoginGet);
+	} else {
+		console.log('SESSION EXPIRED, GIVE PASSWORD TO RECONNECT');
+	}
+}
+
+sessionLoad(cr.user, function(s) {
+	console.log('SESSION LOADED');
+	//console.log(s);
+	cookies = s.cookies;
+	session = cookiesParse(cookies);
+	process.nextTick(function() {
+		getIndex(session, sessionVerify);
+	});
+});

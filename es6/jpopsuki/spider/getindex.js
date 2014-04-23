@@ -1,8 +1,9 @@
 import hp from 'htmlparser2';
 import request from './requestjps';
 
-function getIndex(cookies, cb, log) {
-	var handler = new hp.DomHandler(function(err, dom) {
+function getIndex(cookies, cb, log, getBody) {
+	var body = ''
+		, handler = new hp.DomHandler(function(err, dom) {
 				if ( err ) {
 					console.log('Error parsing '+req.info());
 					console.log(err);
@@ -19,8 +20,10 @@ function getIndex(cookies, cb, log) {
 				}
 			, onData: function(chunk) {
 					parser.write(chunk);
+					getBody && (body += chunk);
 				}
 			, done: function(res, req) {
+					getBody && (res.body = body);
 					response = res;
 					parser.done();
 				}
