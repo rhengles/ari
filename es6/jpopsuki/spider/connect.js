@@ -79,6 +79,7 @@ function handleIndex(dom, res, req, o) {
 	if ( !user || !user.id || !user.name ) {
 		console.log('USER NOT FOUND: '+jsonPrint(user));
 	} else {
+		console.log('LOGIN SUCCESSFUL');
 		//console.log('USER: '+jsonPrint(user));
 		s = setUserSession(s, user);
 		process.nextTick(function() {
@@ -92,7 +93,6 @@ function handleIndex(dom, res, req, o) {
 }
 
 function handleLoginPost(res, req, o) {
-	console.log('LOGIN SUCCESSFUL');
 	process.nextTick(function() {
 		getIndex(o.session.cookies, function(dom, res, req) {
 			handleIndex(dom, res, req, o);
