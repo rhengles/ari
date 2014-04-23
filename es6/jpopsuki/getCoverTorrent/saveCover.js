@@ -1,6 +1,7 @@
 var doneMap = {};
 
 function saveCover(dir, json) {
+	// @TODO
 	if ( dir in doneMap ) {
 		return;
 	} else {

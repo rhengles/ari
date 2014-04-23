@@ -1,5 +1,5 @@
 import http from 'http';
-import Writer from './writer';
+import Writer from '../writer';
 
 http.createServer(function (req, res) {
 	var w;
@@ -7,8 +7,9 @@ http.createServer(function (req, res) {
   if ( req.method === 'POST' ) {
     req.setEncoding('utf8');
 		w = new Writer;
-		w.saveDir = 'jpopsuki/data/';
-		w.save(req, 'html');
+		w.setDir('jpopsuki/data/')
+			.setName(req.url, 'html')
+			.pipe(req);
     req.on('data', function(chunk) {
       console.log(chunk.substr(0, 80));
     });
