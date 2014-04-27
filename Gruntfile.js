@@ -25,11 +25,13 @@ module.exports = function(grunt) {
 			//	}]
 			//},
 			cjs: {
-				type: 'cjs',
-				indent: 'tab',
-				eol: 'nix', // Parece que o Grunt converte o "\n" para "\r\n" no Windows
-				strict: false,
-				squotes: true,
+				options: {
+					type: 'cjs',
+					indent: 'tab',
+					eol: '\n', // Parece que o Grunt converte o "\n" para "\r\n" no Windows
+					strict: false,
+					squotes: true
+				},
 				files: [{
 					expand: true,
 					cwd: 'es6/',
