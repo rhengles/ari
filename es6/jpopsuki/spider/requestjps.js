@@ -18,6 +18,8 @@ var requestJPS = function(opt) {
 			}
 		, proxy: proxy
 		, body: opt.body
+		, getBody: opt.getBody
+		, getDom: opt.getDom
 		, beforeLoad: opt.log
 			? function() {
 					var opt = this.opt;
@@ -35,7 +37,7 @@ var requestJPS = function(opt) {
 			? function(res, req) {
 					console.log('STATUS: ' + res.statusCode);
 					console.log('HEADERS: ' + jsonPrint(res.headers));
-					console.log('BODY: ' + res.body.substr(0, 1200));
+					opt.getBody && console.log('BODY: ' + res.body.substr(0, 1200));
 					return done.apply(this, arguments);
 				}
 			: done
