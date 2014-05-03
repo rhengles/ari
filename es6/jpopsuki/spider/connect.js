@@ -6,14 +6,18 @@ import cookiesParse from './cookies';
 import jsonPrint from './jsonprint';
 import sessionSave from './sessionsave';
 import sessionLoad from './sessionload';
-import dirName from '../dirName';
 import mkDir from '../mkdir';
+
+function sessionPath(dir) {
+	return dir+'session.json';
+}
 
 function connect(o) {
 	if ( !o.user ) {
 		console.log('ERROR: NO USER');
 	} else {
-		sessionLoad(o.user, function(s) {
+		o.sessionPath = sessionPath(o.dir);
+		sessionLoad(o.sessionPath, function(s) {
 			if (s) {
 				o.session = s;
 				sessionLoaded(o);
@@ -66,14 +70,14 @@ function sessionLoaded(o) {
 	var s = decodeSession(o.session);
 	o.session = s;
 	process.nextTick(function() {
-		getIndex(s.cookies, function(dom, res, req) {
-			sessionVerify(dom, res, req, o);
+		getIndex(s.cookies, function(res, req) {
+			sessionVerify(res, req, o);
 		});
 	});
 }
 
-function handleIndex(dom, res, req, o) {
-	var user = findUser(dom)
+function handleIndex(res, req, o) {
+	var user = findUser(res.dom)
 		, s = o.session;
 	//console.log(dom);
 	if ( !user || !user.id || !user.name ) {
@@ -83,7 +87,7 @@ function handleIndex(dom, res, req, o) {
 		//console.log('USER: '+jsonPrint(user));
 		s = setUserSession(s, user);
 		process.nextTick(function() {
-			sessionSave(encodeSession(s), function() {
+			sessionSave(o.sessionPath, encodeSession(s), function() {
 				console.log('SESSION SAVED');//: '+this.path);
 				o.session = acceptSession(s);
 				connected(o);
@@ -94,8 +98,8 @@ function handleIndex(dom, res, req, o) {
 
 function handleLoginPost(res, req, o) {
 	process.nextTick(function() {
-		getIndex(o.session.cookies, function(dom, res, req) {
-			handleIndex(dom, res, req, o);
+		getIndex(o.session.cookies, function(res, req) {
+			handleIndex(res, req, o);
 		});
 	});
 }
@@ -123,12 +127,14 @@ function reconnect(o) {
 	}
 }
 
-function sessionVerify(dom, res, req, o) {
-	var user = findUser(dom)
-		, suser = o.session.user;
+function sessionVerify(res, req, o) {
+	var user = findUser(res.dom)
+		, s = o.session
+		, suser = s.user;
 	if (user) {
 		if ( suser.id == user.id && suser.name == user.name ) {
 			console.log('SESSION ACTIVE');
+			o.session = setUserSession(s, user);
 			process.nextTick(function() {
 				connected(o);
 			});

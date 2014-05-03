@@ -9,9 +9,7 @@ function getIndex(cookies, cb, log, getBody) {
 				}
 			, getBody: getBody
 			, getDom: true
-			, done: function(res, req) {
-					cb(res.dom, res, req);
-				}
+			, done: cb
 			, log: log
       }
 		, req = request(opt);

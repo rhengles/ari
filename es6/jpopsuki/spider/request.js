@@ -87,7 +87,7 @@ Request.prototype.beforeLoad = function() {
 	return this;
 };
 Request.prototype.open = function() {
-  this.req = http.request( req, this.onResponse.bind(this) );
+  this.req = http.request( this.opt.req, this.onResponse.bind(this) );
 	return this;
 };
 Request.prototype.bindError = function() {

@@ -26,6 +26,7 @@ function findUser(dom) {
 	return ( id
 		? { id: id
 			, name: name
+			, href: elem.attribs.href
 			}
 		: null);
 }

@@ -1,8 +1,6 @@
 import fs from 'fs';
-import dirName from '../dirName';
 
-function sessionLoad(name, cb) {
-	var path = 'jpopsuki/user/'+dirName(name)+'/session.json';
+function sessionLoad(path, cb) {
 	fs.readFile(path, {encoding: 'utf8'}, function(err, data) {
 		if (err) {
 			if ( err.code === 'ENOENT' ) {
