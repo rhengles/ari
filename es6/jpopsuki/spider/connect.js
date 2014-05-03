@@ -1,3 +1,4 @@
+import read from 'read';
 import getLogin from './getlogin';
 import postLogin from './postlogin';
 import getIndex from './getindex';
@@ -116,14 +117,36 @@ function handleLoginGet(res, req, o) {
 	});
 }
 
+function reconnect_pass(o) {
+	console.log('CONNECTING');
+	getLogin(function(res, req) {
+		handleLoginGet(res, req, o);
+	});
+}
+
 function reconnect(o) {
 	if (o.pass) {
-		console.log('CONNECTING');
-		getLogin(function(res, req) {
-			handleLoginGet(res, req, o);
-		});
+		reconnect_pass(o);
 	} else {
-		console.log('GIVE PASSWORD TO RECONNECT');
+		//console.log('GIVE PASSWORD TO RECONNECT');
+		read(
+			{ prompt: 'Give password to reconnect:'
+			, silent: true
+			, replace: '*'
+			}
+		, function(err, result) {
+				if (err) {
+					console.log('Error: '+err);
+					return;
+				}
+				if ( !result ) {
+					console.log('Password must not be empty');
+				} else {
+					//console.log('Password given: '+result);
+					o.pass = result;
+					reconnect_pass(o);
+				}
+			});
 	}
 }
 
