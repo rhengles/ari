@@ -42,7 +42,7 @@ Writer.prototype.setName = function(name, ext) {
 	return this.setRawName( this.prepareName(name, ext) );
 };
 
-Writer.prototype.setRawName = function(name, ext) {
+Writer.prototype.setRawName = function(name) {
 	this.name = name;
 	return this;
 };

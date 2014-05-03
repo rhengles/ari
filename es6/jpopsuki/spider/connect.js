@@ -130,9 +130,9 @@ function reconnect(o) {
 	} else {
 		//console.log('GIVE PASSWORD TO RECONNECT');
 		read(
-			{ prompt: 'Give password to reconnect:'
+			{ prompt: 'Give password to reconnect (leave empty to cancel):'
 			, silent: true
-			, replace: '*'
+			, replace: '#'
 			}
 		, function(err, result) {
 				if (err) {
@@ -140,7 +140,7 @@ function reconnect(o) {
 					return;
 				}
 				if ( !result ) {
-					console.log('Password must not be empty');
+					console.log('Empty password');
 				} else {
 					//console.log('Password given: '+result);
 					o.pass = result;

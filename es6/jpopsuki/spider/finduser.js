@@ -5,7 +5,7 @@ var du = hp.DomUtils
 	, reID = /user\.php\?id=([^&=?#;]+)/;
 
 function findUser(dom) {
-	var id, name;
+	var id, name, href;
 	du.find(function(elem) {
 		var m, c
 			, found = elem
@@ -20,13 +20,14 @@ function findUser(dom) {
 		if (found) {
 			id = m[1];
 			name = getText(elem);
+			href = elem.attribs.href;
 		}
 		return found;
 	}, dom, true, 1);
 	return ( id
 		? { id: id
 			, name: name
-			, href: elem.attribs.href
+			, href: href
 			}
 		: null);
 }

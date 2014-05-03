@@ -1,16 +1,16 @@
 import Writer from '../writer';
-import mkDir from '../mkdir';
+//import mkDir from '../mkdir';
 import jsonPrint from './jsonprint';
 
 function sessionSave(path, data, cb) {
 	var name = data.user.name;
-	mkDir(path, function() {
+	//mkDir(path, function() {
 		var w = new Writer;
 		w.onFinish = cb;
-		w.setDir(path)
-			.setName('session.json')
+		//w.setDir(path)
+		w.setRawName(path)
 			.save(jsonPrint(data));
-	});
+	//});
 }
 
 export default sessionSave;
