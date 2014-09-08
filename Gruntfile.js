@@ -25,12 +25,12 @@ module.exports = function(grunt) {
 			//	}]
 			//},
 			cjs: {
-				options: {
 					type: 'cjs',
 					indent: 'tab',
 					eol: '\n', // Parece que o Grunt converte o "\n" para "\r\n" no Windows
 					strict: false,
-					squotes: true
+					squotes: true,
+				options: {
 				},
 				files: [{
 					expand: true,
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
 	// Load the plugin that provides the "uglify" task.
 	//grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-es6-module-transpiler');
+	grunt.loadNpmTasks('grunt-es6-module-transpiler-rhengles');
 
 	// Default task(s).
 	//grunt.registerTask('default', ['uglify']);

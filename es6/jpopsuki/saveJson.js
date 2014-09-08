@@ -1,4 +1,4 @@
-import writer from './writer';
+import writer from './writerSimple';
 
 function saveJson(name, data) {
   data = JSON.stringify(data, null, '\t');
