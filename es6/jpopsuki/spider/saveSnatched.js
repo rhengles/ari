@@ -25,7 +25,7 @@ function saveSnatched(session, cb) {
 function getPage(session, page, cb) {
 	getSnatched(session.user.id, page, session.cookies, function(res, req) {
 		var result = parseSnatched(res, req, page);
-		saveJson('jpopsuki/json/snatched/'+page+'.json', result.rows, function() {
+		saveJson('jpopsuki\\json\\snatched\\'+page+'.json', result.rows, function() {
 			cb(result.lastPage, result.rows.length);
 		});
 	});
