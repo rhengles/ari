@@ -3,7 +3,7 @@ import ent from 'entities';
 
 function parseUrl(a, query) {
 	return url.parse(
-		ent.decode(a.attribs.href)
+		ent.decodeHTML(a.attribs.href)
 	, query == null ? true : query);
 }
 
