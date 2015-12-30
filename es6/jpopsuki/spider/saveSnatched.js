@@ -1,34 +1,19 @@
 import getSnatched from './getsnatched';
 import parseSnatched from './parseSnatched';
-import saveJson from '../saveJson';
+import saveAbstract from './saveAbstract';
 
-function saveSnatched(session, cb) {
-	function next() {
-		getPage(session, currentPage, function(last, count) {
-			if ( null == lastPage ) {
-				lastPage = last || 1;
+function domainSnatched(userid) {
+	return (
+		{ get: function(page, cookies, cb, log) {
+				return getSnatched(userid, page, cookies, cb, log);
 			}
-			sum += count || 0;
-			if ( count && currentPage < lastPage ) {
-				currentPage += 1;
-				return setTimeout(next, 2000);
-			}
-			return cb(currentPage, lastPage, sum);
+		, parse: parseSnatched
+		, dir: 'jpopsuki/json/snatched/'
 		});
-	}
-	var lastPage;
-	var currentPage = 1;
-	var sum = 0;
-	next();
 }
 
-function getPage(session, page, cb) {
-	getSnatched(session.user.id, page, session.cookies, function(res, req) {
-		var result = parseSnatched(res, req, page);
-		saveJson('jpopsuki\\json\\snatched\\'+page+'.json', result.rows, function() {
-			cb(result.lastPage, result.rows.length);
-		});
-	});
+function saveSnatched(session, cb) {
+	saveAbstract(domainSnatched(session.user.id), session, cb);
 }
 
 export default saveSnatched;

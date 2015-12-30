@@ -13,7 +13,9 @@ function arr2map(a) {
 	return m;
 }
 
-var pathJson = 'jpopsuki/json'
+console.log('ct 0');
+
+var pathJson = 'jpopsuki/json/snatched'
 	, pathLib = 'jpopsuki/lib'
 	, reFile = /^(\d+)\.json$/
 	, allDir = new All
@@ -24,7 +26,11 @@ var pathJson = 'jpopsuki/json'
 sa.path = pathLib;
 sa.onFolder(saveCover);
 
+console.log('ct 1');
+
 allDir.then(function() {
+console.log('ct 5');
+
 	var jsonFile = this.json[0]
 		, lib = this.lib[0]
 		, allPages = new All;
@@ -42,12 +48,16 @@ allDir.then(function() {
 			});
 	});
 	allPages.then(function() {
+console.log('ct 6');
+
 		sa.then(function() {
 			console.log('Done');
 			console.log(this.count());
 		});
 	});
 });
+
+console.log('ct 2');
 
 dir(
 	{ path: pathJson
@@ -61,7 +71,11 @@ dir(
 	, cb: cbJson
 	});
 
+console.log('ct 3');
+
 dir(
 	{ path: pathLib
 	, cb: cbLib
 	});
+
+console.log('ct 4');
