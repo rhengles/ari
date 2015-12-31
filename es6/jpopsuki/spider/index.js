@@ -18,7 +18,8 @@ function connected(s) {
 	//saveArtists(s, function(currentPage, lastPage, sum) {
 	//	console.log('END - PAGE '+currentPage+' OF '+lastPage+', TOTAL '+sum);
 	//})
-	saveArtist('285', s, function(artist) {
+	//saveArtist('285', s, function(artist) {
+	saveArtist('16729', s, function(artist) {
 		console.log(artist);
 	});
 }

@@ -29,17 +29,21 @@ function getArtistDir(id) {
 	var path = [];
 	id = String(id);
 	var len = id.length;
+	//console.log('dir '+len+' '+id);
 	if ( !len ) throw new Error('Empty artist id');
 	while (len) {
 		var cpart = Math.min(part, len);
-		cpart = id.substr( len-cpart, cpart );
-		id = id.substr( 0, len-cpart );
+		var ipart = len-cpart;
+		cpart = id.substr( ipart, cpart );
+		id = id.substr( 0, ipart );
 		len = id.length;
+		//console.log('dir '+cpart+' '+len+' '+id);
 		while ( cpart.length < part ) {
 			cpart = '0'+cpart;
 		}
 		path.unshift( cpart );
 	}
+	//console.log('dir '+path);
 	path.unshift( path.length );
 	var pathFirst = 'jpopsuki/json/artist';
 	var pathLast = path.pop()+'.json';
