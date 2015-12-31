@@ -1,6 +1,7 @@
 import hp from 'htmlparser2';
 import getText from '../getText';
 import parseTags from './parseTags';
+import parseArtistLink from './parseArtistLink';
 
 var du = hp.DomUtils;
 
@@ -16,9 +17,11 @@ function sidebarMapFind(name) {
 			, key: 'stats'
 			, fn: parseSidebarStats }
 		, { title: 'Fans'
-			, key: 'fans' }
+			, key: 'fans'
+			, fn: parseSidebarFans }
 		, { title: 'Similar artists'
-			, key: 'similar' }
+			, key: 'similar'
+			, fn: parseSidebarSimilar }
 		]);
 }
 
@@ -128,8 +131,16 @@ function parseSidebarImage(box) {
 	}
 }
 
+function getUlStats(elem) {
+	return du.findOne(function(elem) {
+		return (elem.name === 'ul')
+			&& (elem.attribs)
+			&& (/\bstats\b/.test(elem.attribs['class']));
+	}, elem.children);
+}
+
 function parseSidebarTags(box) {
-	return parseTags(box);
+	return parseTags(getUlStats(box));
 }
 
 function prepareStatRegex(item) {
@@ -150,11 +161,7 @@ function parseSidebarStats(box) {
 	var result = {};
 	var list;
 	var scount = 0;
-	list = du.findOne(function(elem) {
-		return (elem.name === 'ul')
-			&& (elem.attribs)
-			&& (-1 != elem.attribs.class.indexOf('stats'));
-	}, box.children);
+	list = getUlStats(box);
 	list = du.findAll(function(elem) {
 		return (elem.name === 'li');
 	}, list.children);
@@ -175,6 +182,60 @@ function parseSidebarStats(box) {
 		});
 	});
 	return scount ? result : void 0;
+}
+
+var reUser = /^[^?]*user\.php\?(?:[^#]*(?:=[^#]*)&(?:amp;)?)*id=([0-9]+)(?:[&#].*)?$/i;
+
+var reArtistAction = /^[^?]*artist\.php\?(?:[^#]*(?:=[^#]*)&(?:amp;)?)*action=(fan)(?:[&#].*)?$/i;
+
+var reArtistFan = /^[^?]*artist\.php\?(?:[^#]*(?:=[^#]*)&(?:amp;)?)*f=(add|remove)(?:[&#].*)?$/i;
+
+function parseSidebarFans(box) {
+	var ul = getUlStats(box);
+	var fans = du.findAll(function(elem) {
+				return (elem.name === 'a')
+					&& (elem.attribs)
+					&& reUser.test(elem.attribs.href || '');
+			}, ul.children).map(function(a) {
+				var m = a.attribs.href.match(reUser);
+				return (
+					{ id: m[1]
+					, name: getText(a)
+					});
+			});
+	var myself = du.findOne(function(elem) {
+				return (elem.name === 'a')
+					&& (elem.attribs)
+					&& (reArtistAction.test(elem.attribs.href))
+					&& (reArtistFan   .test(elem.attribs.href));
+			}, box.children);
+	myself = myself.attribs.href.match(reArtistFan);
+	myself =
+		( myself[1] === 'remove'
+		? true
+		: void 0 );
+	return (
+		{ users: fans
+		, myself: myself
+		});
+}
+
+function parseSidebarSimilar(box) {
+	var ul = getUlStats(box);
+	var li = du.filter(function(elem) {
+				return (elem.name === 'li');
+			}, ul.children, false);
+	var similar = [];
+	li.forEach(function(li) {
+		li = parseArtistLink.findOne(li);
+		if (li) {
+			similar.push(
+				{ id: parseArtistLink.getId(li)
+				, name: getText(li)
+				});
+		}
+	});
+	return similar.length ? similar : void 0;
 }
 
 export default parseSidebar;

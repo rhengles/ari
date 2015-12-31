@@ -2,6 +2,7 @@ import hp from 'htmlparser2';
 import getRows from '../html2json/getRows';
 import parsePages from './parsePages';
 import parseTags from './parseTags';
+import parseArtistLink from './parseArtistLink';
 import getText from '../getText';
 
 var du = hp.DomUtils;
@@ -52,14 +53,15 @@ function colCover(td) {
 	}
 }
 
-var reArtist = /^[^?]*artist\.php\?(?:[^#]*(?:=[^#]*)&)*id=([0-9]+)(?:[&#].*)?$/i;
+//var reArtist = /^[^?]*artist\.php\?(?:[^#]*(?:=[^#]*)&)*id=([0-9]+)(?:[&#].*)?$/i;
 
 function colInfo(td) {
-	var artist = du.findOne(function(elem) {
-				return (elem.name === 'a')
-					&& (elem.attribs)
-					&& reArtist.test(elem.attribs.href || '');
-			}, td.children);
+	var artist = parseArtistLink.findOne(td);
+	//du.findOne(function(elem) {
+	//			return (elem.name === 'a')
+	//				&& (elem.attribs)
+	//				&& reArtist.test(elem.attribs.href || '');
+	//		}, td.children);
 	var tags = du.findOne(function(elem) {
 				return (elem.name === 'div')
 					&& (elem.attribs)
@@ -74,7 +76,8 @@ function colInfo(td) {
 			}, td.children).pop();
 	about = getText(about);
 	return (
-		{ id: artist.attribs.href.match(reArtist)[1]
+		//{ id: artist.attribs.href.match(reArtist)[1]
+		{ id: parseArtistLink.getId(artist)
 		, name: getText(artist)
 		, tags: tags
 		, about: about
