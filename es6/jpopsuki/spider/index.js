@@ -4,6 +4,7 @@ import jsonPrint from './jsonprint';
 import dirName from '../dirName';
 import saveSnatched from './saveSnatched';
 import saveArtists from './saveArtists';
+import saveArtist from './saveArtist';
 //import savePage from './savepage';
 
 var dir = 'jpopsuki/user/'
@@ -14,9 +15,12 @@ function connected(s) {
 	console.log('USER CONNECTED: '+s.user.name+' ('+s.user.id+')');
 	console.log(session);
 	//saveSnatched(s, function(currentPage, lastPage, sum) {
-	saveArtists(s, function(currentPage, lastPage, sum) {
-		console.log('END - PAGE '+currentPage+' OF '+lastPage+', TOTAL '+sum);
-	})
+	//saveArtists(s, function(currentPage, lastPage, sum) {
+	//	console.log('END - PAGE '+currentPage+' OF '+lastPage+', TOTAL '+sum);
+	//})
+	saveArtist('285', s, function(artist) {
+		console.log(artist);
+	});
 }
 
 connect(

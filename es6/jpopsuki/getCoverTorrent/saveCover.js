@@ -7,7 +7,8 @@ function saveCover(dir, json) {
 	} else {
 		doneMap[dir] = true;
 	}
-	console.log(dir+' - '+json.info.artist.name);
+	var name = json.info.artist.name;
+	console.log(dir+(name===dir?'':' - '+name));
 }
 
 export default saveCover;
