@@ -28,7 +28,7 @@ function parseInfo(content) {
 				return (elem.name === 'h2');
 			}, content.children, false, 2);
 	h2[0] && (name     = getText(h2[0]));
-	h2[1] && (original = getText(h2[1]));
+	h2[1] && (original = getText(h2[1]).replace(/^\(|\)$/gi, ''));
 	return (
 		{ name: name
 		, original: original

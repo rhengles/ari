@@ -4,20 +4,20 @@ import saveJson from '../saveJson';
 import mkDir from '../mkdir';
 
 function saveArtist(id, session, cb) {
-	console.log('saveArtist '+id);
+	//console.log('saveArtist '+id);
 	var path = getArtistDir(id);
 	var name = path.pop();
-	console.log('getArtistDir '+path+' - '+name);
+	//console.log('getArtistDir '+path+' - '+name);
 	getArtist(id, session.cookies, function(res, req) {
-		console.log('getArtist '+id);
+		//console.log('getArtist '+id);
 		var result = parseArtist(res, req, id);
-		console.log('parseArtist '+result);
+		//console.log('parseArtist '+result);
 		mkDir.rec(path, function(err) {
 			if (err) throw err;
-			console.log('mkDir artist '+path);
+			//console.log('mkDir artist '+path);
 			path = { dir: path.join('/')+'/', name: name };
 			saveJson(path, result, function() {
-				console.log('saveJson artist');
+				//console.log('saveJson artist');
 				cb(result);
 			});
 		});
@@ -41,7 +41,7 @@ function getArtistDir(id) {
 		path.unshift( cpart );
 	}
 	path.unshift( path.length );
-	var pathFirst = 'jpopsuki/artist';
+	var pathFirst = 'jpopsuki/json/artist';
 	var pathLast = path.pop()+'.json';
 	path.unshift(pathFirst);
 	path.push(pathLast);
