@@ -1,6 +1,7 @@
 import hp from 'htmlparser2';
 import getRows from '../html2json/getRows';
 import parsePages from './parsePages';
+import parseTags from './parseTags';
 import getText from '../getText';
 
 var du = hp.DomUtils;
@@ -52,7 +53,6 @@ function colCover(td) {
 }
 
 var reArtist = /^[^?]*artist\.php\?(?:[^#]*(?:=[^#]*)&)*id=([0-9]+)(?:[&#].*)?$/i;
-var reTags = /^[^?]*torrents\.php\?(?:[^#]*(?:=[^#]*)&)*searchtags=([^&#]+)(?:[&#].*)?$/i;
 
 function colInfo(td) {
 	var artist = du.findOne(function(elem) {
@@ -67,14 +67,8 @@ function colInfo(td) {
 			}, td.children);
 	tags =
 		( tags
-		? du.findAll(function(elem) {
-				return (elem.name === 'a')
-					&& (elem.attribs)
-					&& reTags.test(elem.attribs.href || '');
-			}, tags.children).map(function(elem) {
-				return getText(elem);
-			})
-		: [] );
+		? parseTags(tags)
+		: void 0 );
 	var about = du.findAll(function(elem) {
 				return (elem.name === 'div');
 			}, td.children).pop();
