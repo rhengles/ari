@@ -1,6 +1,7 @@
 import hp from 'htmlparser2';
 import getText from '../getText';
 import parseSidebar from './parseArtistSidebar';
+import parseMain from './parseArtistMain';
 
 var du = hp.DomUtils;
 
@@ -18,9 +19,12 @@ function parseArtist(res, req, id) {
 	}, content.children);
 	var info = parseInfo(content);
 	var side = parseSidebar(content, info.name);
+	var main = parseMain(content);
+	info.description = main.description;
 	return (
 		{ info: info
 		, side: side
+		, torrents: main.torrents
 		});
 }
 
@@ -35,6 +39,7 @@ function parseInfo(content) {
 	return (
 		{ name: name
 		, original: original
+		, description: void 0
 		});
 }
 
