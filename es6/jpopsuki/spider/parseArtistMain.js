@@ -76,6 +76,8 @@ function parseMainTorrentsKey(table, key) {
 		} else if ( testTorrentGroup(tr, key) ) {
 			currentGroup = parseTorrentGroup(tr, key);
 			groups.push(currentGroup);
+		} else if ( testTorrentFormat(tr, key) ) {
+			currentGroup.formats.push( parseTorrentFormat(tr, key) );
 		}
 	});
 	return (
@@ -128,7 +130,8 @@ function parseTorrentGroupImg(tr) {
 
 var reDate = /(?:\s|^)(\d+\.\d+\.\d+)(?:$|\s)/i;
 
-var reTorrent = /^[^?]*torrents\.php\?(?:[^#]*(?:=[^#]*)&)*id=([0-9]+)(?:[&#].*)?$/i;
+var reTorrent = /^[^?]*torrents\.php\?(?:[^#]*(?:=[^#]*)&(?:amp;)?)*id=([0-9]+)(?:[&#].*)?$/i;
+var reTorrentFormat = /^[^?]*torrents\.php\?(?:[^#]*(?:=[^#]*)&(?:amp;)?)*torrentid=([0-9]+)(?:[&#].*)?$/i;
 
 var reTitleComments = /^\s*View Comments\s*$/i;
 
@@ -186,12 +189,57 @@ function parseTorrentGroup(tr, key) {
 	return (
 		{ image: image
 		, info: info
+		, formats: []
 		});
 }
 
 function testTorrentFormat(tr, key) {
 	return (tr.attribs)
-		&& (/\bgroup_torrent\b/i.test(tr.attribs['class']));
+		&& (/(?:\s|^)group_torrent(?:$|\s)/i.test(tr.attribs['class']));
+}
+
+function parseTorrentFormat(tr, key) {
+	var id;
+	var format;
+	var snatched;
+	var tds = du.findAll(function(elem) {
+				return (elem.name === 'td');
+			}, tr.children);
+	du.findOne(function(elem) {
+		if ( elem.name === 'a' && elem.attribs ) {
+			var m = elem.attribs.href.match(reTorrentFormat);
+			if ( m ) {
+				id = m[1];
+				format = getText(elem).split('/').map(function(f) {
+					return f.replace(/^\s+|\s+$/g, '');
+				});
+				return true;
+			}
+		}
+		return false;
+	}, tds[1].children);
+	du.findOne(function(elem) {
+		if ( elem.name === 'strong' ) {
+			if ( /^\s*snatched\s*$/i.test(getText(elem)) ) {
+				snatched = true;
+				return true;
+			}
+		}
+		return false;
+	}, tds[1].children);
+	var size = getText(tds[2]);
+	var snatches = getText(tds[3]);
+	var seeders = getText(tds[4]);
+	var leechers = getText(tds[5]);
+	return (
+		{ id: id
+		, format: format
+		, size: size
+		, snatches: snatches
+		, seeders: seeders
+		, leechers: leechers
+		, snatched: snatched
+		});
 }
 
 export default parseMain;
