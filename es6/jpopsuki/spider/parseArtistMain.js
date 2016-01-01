@@ -55,6 +55,7 @@ function parseMainTorrents(main) {
 	du.findAll(function(elem) {
 		return (elem.name === 'table')
 			&& (elem.attribs)
+			&& (elem.attribs.id)
 			&& (elem.attribs['class'] === 'torrent_table');
 	}, main.children).forEach(function(table) {
 		var key = table.attribs.id.replace(/^torrents_/i, '');
@@ -173,7 +174,7 @@ function parseTorrentGroupInfo(tr) {
 					&& (elem.attribs)
 					&& (elem.attribs['class'] === 'tags');
 			}, tr.children);
-	tags = parseTags(tags);
+	tags && (tags = parseTags(tags));
 	return (
 		{ date: date
 		, id: id

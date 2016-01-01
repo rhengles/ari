@@ -20,6 +20,7 @@ function parseArtist(res, req, id) {
 	var info = parseInfo(content);
 	var side = parseSidebar(content, info.name);
 	var main = parseMain(content);
+	info.id = id;
 	info.description = main.description;
 	return (
 		{ info: info
@@ -37,7 +38,8 @@ function parseInfo(content) {
 	h2[0] && (name     = getText(h2[0]));
 	h2[1] && (original = getText(h2[1]).replace(/^\(|\)$/gi, ''));
 	return (
-		{ name: name
+		{ id: void 0
+		, name: name
 		, original: original
 		, description: void 0
 		});

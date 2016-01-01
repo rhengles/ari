@@ -1,7 +1,7 @@
 import fs from 'fs';
 import dir from '../dir';
 import All from '../all';
-import loadJson from './loadJson';
+import loadJson from '../loadJson';
 import SaveArtist from './saveArtist';
 import saveCover from './saveCover';
 
