@@ -30,7 +30,12 @@ function connected(s) {
 			if ( !json[row] ) {
 				return setTimeout(nextPage, 2000);
 			}
-			saveArtist(json[row].info.id, s, function(artist) {
+			var id = json[row].info.id;
+			if ( '429' == id ) {
+				row += 1;
+				return nextArtist();
+			}			
+			saveArtist(id, s, function(artist) {
 				row += 1;
 				console.log('- '+
 					(row<10?'0':'')+row+
@@ -40,11 +45,11 @@ function connected(s) {
 			});
 		}
 		var row = 0;
-		console.log('');
-		console.log('ARTISTS PAGE '+page);
-		if ( page < 14 ) {
+		if ( page < 825 ) {
 			return nextPage();
 		}
+		console.log('');
+		console.log('ARTISTS PAGE '+page);
 		console.log('');
 		nextArtist();
 	}, function() {

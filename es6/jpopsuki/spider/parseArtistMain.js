@@ -129,7 +129,7 @@ function parseTorrentGroupImg(tr) {
 		});
 }
 
-var reDate = /(?:\s|^)(\d+\.\d+\.\d+)(?:$|\s)/i;
+var reDate = /(?:\s|^)(\d+(?:\.\d+\.\d+)?)(?:$|\s)/i;
 
 var reTorrent = /^[^?]*torrents\.php\?(?:[^#]*(?:=[^#]*)&(?:amp;)?)*id=([0-9]+)(?:[&#].*)?$/i;
 var reTorrentFormat = /^[^?]*torrents\.php\?(?:[^#]*(?:=[^#]*)&(?:amp;)?)*torrentid=([0-9]+)(?:[&#].*)?$/i;
