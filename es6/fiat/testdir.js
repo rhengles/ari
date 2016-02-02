@@ -64,6 +64,11 @@ function next() {
 					));
 					h.forEach(function(elem) {
 						var p = elem.parent;
+						if ( p ) {
+							mapType[getTypeHeader(p)] += 1;
+						} else {
+							mapType.orphan += 1;
+						}
 						var ph = p && htmlTag(p) || '';
 						console.log(elem.name, ph);
 					});
@@ -83,6 +88,16 @@ function next() {
 	});
 }
 
+function getTypeHeader(elem) {
+	return ( elem.name === 'div'
+		&& /\bheader\b/i.test((elem.attribs || {})['class'] || '') )
+		? 'divheader'
+		: ( ( elem.name === 'body' )
+		  ? 'body'
+		  : 'other'
+		  );
+}
+
 var diter = dir(
 	//{ path: process.cwd()
 	{ path: pathHTML
@@ -99,5 +114,11 @@ var diter = dir(
 var last;
 var mapCount = [];
 var total = 0;
+var mapType =
+	{ divheader: 0
+	, body: 0
+	, other: 0
+	, orphan: 0
+	};
 
 next();
