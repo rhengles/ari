@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+
+  "name": "Getting started example",
+  "description": "This extension shows a Google Image search result for the current page",
+  "version": "0.0.1",
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "devtools_page": "devtools.html",
+  "permissions": [
+    "activeTab",
+    "*://*/*",
+    "<all_urls>"
+  ]
+}
