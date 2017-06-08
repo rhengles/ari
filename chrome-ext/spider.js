@@ -1,22 +1,33 @@
 
 function onNavigated(url) {
 	console.log('onNavigated', url);
+	pageUrl = urlJson(new URL(url));
 	backgroundPageConnection.postMessage({
 		name: 'onNavigated',
 		tabId: chrome.devtools.inspectedWindow.tabId,
 		baseUrl: baseUrl,
-		url: url
+		url: pageUrl
 	});
 }
 
 function onRequestFinished(request) {
-	console.log('onRequestFinished', request);
+	if ( !pageUrl ) {
+		console.log('onRequestFinished error', request);
+		throw new Error('Empty page URL');
+		return;
+	}
+	var url = urlJson(new URL(request.request.url));
+	if ( url.host !== pageUrl.host ) {
+		console.log('onRequestFinished '+url.href, request);
+		return;
+	}
 	request.getContent(function(content, encoding) {
-		console.log('onRequestContent', request, content.length, encoding);
+		console.log('onRequestContent '+url.pathname+url.search+url.hash, content.length, encoding, request);
 		backgroundPageConnection.postMessage({
-			name: 'onRequestFinished',
+			name: 'onRequestContent',
 			tabId: chrome.devtools.inspectedWindow.tabId,
 			baseUrl: baseUrl,
+			url: url,
 			request: request,
 			content: content,
 			encoding: encoding
@@ -52,6 +63,7 @@ function stop() {
 
 	chrome.devtools.network.onRequestFinished.removeListener(onRequestFinished);
 	baseUrl = void 0;
+	pageUrl = void 0;
 	console.log('stop listening network');
 }
 
@@ -64,11 +76,29 @@ function isSuccessXhr(xhr) {
 		xhr.responseText;
 }
 
+function urlJson(url) {
+	return {
+		hash: url.hash,
+		host: url.host,
+		hostname: url.hostname,
+		href: url.href,
+		origin: url.origin,
+		password: url.password,
+		pathname: url.pathname,
+		port: url.port,
+		protocol: url.protocol,
+		search: url.search,
+		searchParams: [...url.searchParams.entries()],
+		username: url.username
+	};
+}
+
 chrome.devtools.inspectedWindow.eval('inspect($0)');
 var btStart = document.querySelector('#start');
 var btStop = document.querySelector('#stop');
 var txRemote = document.querySelector('#remote');
 var baseUrl;
+var pageUrl;
 btStart.addEventListener('click', start, false);
 btStop.addEventListener('click', stop, false);
 

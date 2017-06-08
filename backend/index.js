@@ -40,28 +40,34 @@ function startServer() {
 }
 
 function trimSlashes(str) {
-
+	return str.replace(/^\/+|\/+$/g,'');
 }
 
 function handleRequest(req, res) {
-	var size = 0;
-	console.log('init  ', req.method, req.originalUrl);
+	//console.log('init  ', req.method, req.originalUrl);
 
-	req.on('data', function(chunk) {
-		size += chunk.length;
-		console.log('  data', req.method, req.originalUrl, chunk.length);
-	});
-
-	req.on('end', function() {
-		console.log('  end ', req.method, req.originalUrl, size);
-		res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
-		res.write('Not found\n');
-		res.write('Method '+req.method+'\n');
-		res.write('Url '+req.originalUrl+'\n');
-		res.write('Base '+req.baseUrl+'\n');
-		res.write('Path '+req.path+'\n');
-		//res.write('Query '+req.query+'\n');
-		res.write('Body length '+size+'\n');
+	if (req.method === 'GET') {
+		console.log('.', req.method, req.originalUrl);
+		res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' });
+		res.write('OK\n');
 		res.end();
-	});
+	} else if (req.method === 'POST') {
+		var size = 0;
+		req.on('data', function(chunk) {
+			size += chunk.length;
+			//console.log('  data', req.method, req.originalUrl, chunk.length);
+		});
+		req.on('end', function() {
+			console.log('.', req.method, size, req.originalUrl);
+			res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
+			res.write('Not found\n');
+			res.write('Method '+req.method+'\n');
+			res.write('Url '+req.originalUrl+'\n');
+			res.write('Base '+req.baseUrl+'\n');
+			res.write('Path '+req.path+'\n');
+			//res.write('Query '+req.query+'\n');
+			res.write('Body length '+size+'\n');
+			res.end();
+		});
+	}
 }

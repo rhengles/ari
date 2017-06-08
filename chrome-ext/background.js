@@ -25,7 +25,9 @@ function ajax(opt) {
 	}, false);
 
 	xhr.open(opt.method, opt.url);
-	//xhr.setRequestHeader('Content-Type', 'text/html; charset=UTF-8');
+	if (opt.type && opt.body) {
+		xhr.setRequestHeader('Content-Type', opt.type);
+	}
 
 	xhr.send(opt.body || '');
 }
@@ -56,6 +58,36 @@ function ajaxResponse(name, message, evt) {
 	};
 }
 
+function trimSlashes(str) {
+	return str.replace(/^\/+|\/+$/g,'');
+}
+
+function mountPath(message) {
+	var path = message.url.pathname;
+	path = trimSlashes(path);
+	var lastSlash = path.lastIndexOf('/');
+	var base = path.substr(lastSlash+1);
+	var lastDot = base.lastIndexOf('.');
+	if (lastDot === -1) {
+		path += '/index.html';
+	}
+	return trimSlashes(message.baseUrl) + '/' + path;
+}
+
+function getResponseType(message) {
+	var response = message.request.response;
+	var headers = response.headers;
+	var count = headers.length;
+	for ( var i = 0; i < count; i++ ) {
+		var h = headers[i];
+		if ( h.name === 'content-type' ) {
+			return h.value;
+		}
+	}
+	return (response.content.mimeType || 'text/plain') +
+		'; charset=UTF-8';
+}
+
 // background.js
 var connections = {};
 
@@ -76,9 +108,9 @@ chrome.runtime.onConnect.addListener(function (port) {
 
 		if (name == "test_remote") {
 			ajax({
-				method: 'post',
+				method: 'get',
 				url: message.remote,
-				body: 'test',
+				//body: 'test',
 				callback: function(evt) {
 					console.log('test_remote', message, evt);
 					port.postMessage(
@@ -89,7 +121,35 @@ chrome.runtime.onConnect.addListener(function (port) {
 			return;
 		}
 
-		console.log('Message', message, sender, sendResponse);
+		if (name == "onNavigated") {
+			ajax({
+				method: 'get',
+				url: mountPath(message),
+				callback: function(evt) {
+					console.log(
+						ajaxResponse('onNavigated sent', message, evt)
+					);
+				}
+			});
+			return;
+		}
+
+		if (name == "onRequestContent") {
+			ajax({
+				method: 'post',
+				url: mountPath(message),
+				type: getResponseType(message),
+				body: message.content,
+				callback: function(evt) {
+					console.log(
+						ajaxResponse('onRequestContent sent', message, evt)
+					);
+				}
+			});
+			return;
+		}
+
+		console.log('Message', message);//, sender, sendResponse);
 
 // other message handling
   }
