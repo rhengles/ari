@@ -14,6 +14,7 @@
   "author": "Rafael Hengles <rhengles@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "base64-stream": "^0.1.3",
     "express": "^4.15.3"
   }
 }

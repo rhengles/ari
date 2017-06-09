@@ -28,6 +28,11 @@ function ajax(opt) {
 	if (opt.type && opt.body) {
 		xhr.setRequestHeader('Content-Type', opt.type);
 	}
+	var headers = opt.headers;
+	var hcount = headers && headers.length || 0;
+	for ( var i = 0; i < hcount; i++ ) {
+		xhr.setRequestHeader(headers[i].name, headers[i].value);
+	}
 
 	xhr.send(opt.body || '');
 }
@@ -69,7 +74,7 @@ function mountPath(message) {
 	var base = path.substr(lastSlash+1);
 	var lastDot = base.lastIndexOf('.');
 	if (lastDot === -1) {
-		path += '/index.html';
+		path += (path ? '/': '') + 'index.html';
 	}
 	return trimSlashes(message.baseUrl) + '/' + path;
 }
@@ -93,18 +98,22 @@ var connections = {};
 
 chrome.runtime.onConnect.addListener(function (port) {
 
-	console.log('Connect', port);
+	//console.log('Connect', port);
 
   var extensionListener = function (message, sender, sendResponse) {
 
 		var name = message.name;
 
-    // The original connection event doesn't include the tab ID of the
-    // DevTools page, so we need to send it explicitly.
-    if (name == "init") {
-      connections[message.tabId] = port;
-      return;
-    }
+		// The original connection event doesn't include the tab ID of the
+		// DevTools page, so we need to send it explicitly.
+		if (name == "init" || name == "initdev") {
+			connections[message.tabId] = port;
+			return;
+		}
+
+		if (name == "panelcreated") {
+			return;
+		}
 
 		if (name == "test_remote") {
 			ajax({
@@ -139,6 +148,14 @@ chrome.runtime.onConnect.addListener(function (port) {
 				method: 'post',
 				url: mountPath(message),
 				type: getResponseType(message),
+				headers: message.encoding
+					? [
+							{
+								name: 'X-Chrome-Encoding',
+								value: message.encoding
+							}
+						]
+					: null,
 				body: message.content,
 				callback: function(evt) {
 					console.log(

@@ -8,6 +8,9 @@ function onNavigated(url) {
 		baseUrl: baseUrl,
 		url: pageUrl
 	});
+	btStart.disabled = false;
+	btStop.disabled = false;
+	txRemote.disabled = false;
 }
 
 function onRequestFinished(request) {
