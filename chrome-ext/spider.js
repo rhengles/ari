@@ -8,9 +8,9 @@ function onNavigated(url) {
 		baseUrl: baseUrl,
 		url: pageUrl
 	});
-	btStart.disabled = false;
-	btStop.disabled = false;
-	txRemote.disabled = false;
+	//btStart.disabled = false;
+	//btStop.disabled = false;
+	//txRemote.disabled = false;
 }
 
 function onRequestFinished(request) {
@@ -45,7 +45,7 @@ function start() {
 		remote: txRemote.value
 	});
 	btStart.disabled = true;
-	btStop.disabled = true;
+	btStop.disabled = false;
 	txRemote.disabled = true;
 }
 
@@ -67,6 +67,9 @@ function stop() {
 	chrome.devtools.network.onRequestFinished.removeListener(onRequestFinished);
 	baseUrl = void 0;
 	pageUrl = void 0;
+	btStart.disabled = false;
+	btStop.disabled = true;
+	txRemote.disabled = false;
 	console.log('stop listening network');
 }
 
@@ -102,6 +105,7 @@ var btStop = document.querySelector('#stop');
 var txRemote = document.querySelector('#remote');
 var baseUrl;
 var pageUrl;
+btStop.disabled = true;
 btStart.addEventListener('click', start, false);
 btStop.addEventListener('click', stop, false);
 
@@ -125,9 +129,9 @@ backgroundPageConnection.onMessage.addListener(function (message) {
 			return;
 		}
 		console.log('test_remote_response fail', message);
-		btStart.disabled = false;
-		btStop.disabled = false;
-		txRemote.disabled = false;
+		//btStart.disabled = false;
+		//btStop.disabled = false;
+		//txRemote.disabled = false;
 		return;
 	}
 	console.log('bgPageMessage', message);
