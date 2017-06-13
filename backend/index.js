@@ -7,28 +7,32 @@ var express = require('express');
 //var proxy = require('express-http-proxy');
 var url = require('url');
 var openDir = require('./utils/open-dir');
-var port = 16385;
-var baseDir = process.argv[2];
+var port = process.argv[2];
+var baseDir = process.argv[3];
 var openFilesMap = {};
 
 function pathRel(p) {
 	return path.join(__dirname, p);
 }
 
-if ( !baseDir ) {
-	console.error('Please specify a directory to save the files!');
+if ( !port || isNaN(port) || !isFinite(port) ) {
+	console.error('Please specify the port for the server to listen!');
 	process.exit(1);
+} else if ( !baseDir ) {
+	console.error('Please specify a directory to save the files!');
+	process.exit(2);
 } else {
 	baseDir = path.resolve(baseDir);
 	openDir(baseDir, function(err) {
 		if (err) {
 			console.error('Can\'t open directory specified!');
 			console.error(err);
+			process.exit(3);
 			return;
 		}
 		console.log('Using directory '+baseDir);
 		startServer();
-	})
+	});
 }
 
 function startServer() {
