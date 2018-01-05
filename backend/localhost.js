@@ -10,6 +10,11 @@ var app = express();
 
 var port = process.argv[2];
 
+app.post('*', function(req, res, next) {
+	req.method = 'GET';
+	next();
+});
+
 app.use(express.static(process.argv[3]));
 
 app.listen(port, function() {
