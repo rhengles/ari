@@ -25,6 +25,10 @@ function onRequestFinished(request) {
 		return;
 	}
 	request.getContent(function(content, encoding) {
+		if ( !content ) {
+			console.error('onRequestContent '+url.pathname+url.search+url.hash, content, encoding, request);
+			return;
+		}
 		console.log('onRequestContent '+url.pathname+url.search+url.hash, content.length, encoding, request);
 		backgroundPageConnection.postMessage({
 			name: 'onRequestContent',
